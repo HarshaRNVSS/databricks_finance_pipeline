@@ -1,0 +1,29 @@
+bundle:
+  name: finance_dlt_dev
+  type: dlt_pipeline
+
+resources:
+  pipelines:
+    bronze_pipeline:
+      name: "Finance Bronze DLT - Dev"
+      catalog: "finance_dev"
+      schema: "bronze"
+      libraries:
+        - notebook: "../../notebooks/bronze_eventhub_ingest.py"
+      storage: "abfss://lake@adbsdatalake.dfs.core.windows.net/dev/bronze"
+
+    silver_pipeline:
+      name: "Finance Silver DLT - Dev"
+      catalog: "finance_dev"
+      schema: "silver"
+      libraries:
+        - notebook: "../../notebooks/silver_trades_dlt.py"
+      storage: "abfss://lake@adbsdatalake.dfs.core.windows.net/dev/silver"
+
+    gold_pipeline:
+      name: "Finance Gold DLT - Dev"
+      catalog: "finance_dev"
+      schema: "gold"
+      libraries:
+        - notebook: "../../notebooks/gold_trades_dlt.py"
+      storage: "abfss://lake@adbsdatalake.dfs.core.windows.net/dev/gold"
