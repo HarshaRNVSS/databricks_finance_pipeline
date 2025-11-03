@@ -1,6 +1,5 @@
 bundle:
   name: finance_dlt_dev
-  type: dlt_pipeline
 
 resources:
   pipelines:
@@ -9,7 +8,8 @@ resources:
       catalog: "finance_dev"
       schema: "bronze"
       libraries:
-        - notebook: "../../notebooks/bronze_eventhub_ingest.py"
+        - notebook:
+            path: "notebooks/bronze_eventhub_ingest.py"
       storage: "abfss://lake@adbsdatalake.dfs.core.windows.net/dev/bronze"
 
     silver_pipeline:
@@ -17,7 +17,8 @@ resources:
       catalog: "finance_dev"
       schema: "silver"
       libraries:
-        - notebook: "../../notebooks/silver_trades_dlt.py"
+        - notebook:
+            path: "notebooks/silver_trades_dlt.py"
       storage: "abfss://lake@adbsdatalake.dfs.core.windows.net/dev/silver"
 
     gold_pipeline:
@@ -25,5 +26,17 @@ resources:
       catalog: "finance_dev"
       schema: "gold"
       libraries:
-        - notebook: "../../notebooks/gold_trades_dlt.py"
+        - notebook:
+            path: "notebooks/gold_trades_dlt.py"
       storage: "abfss://lake@adbsdatalake.dfs.core.windows.net/dev/gold"
+
+targets:
+  default:
+    mode: development
+    default: true
+
+  dev:
+    mode: development
+    workspace:
+      host: https://adb-4058806910823144.4.azuredatabricks.net
+      root_path: /Workspace/Users/sreesatya2512@gmail.com/dev
