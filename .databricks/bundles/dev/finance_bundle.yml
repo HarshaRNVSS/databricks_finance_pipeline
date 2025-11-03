@@ -1,0 +1,21 @@
+bundle:
+  name: finance_dlt_bundle
+  type: dlt_pipeline
+
+resources:
+  pipelines:
+    finance_trades_pipeline:
+      name: "Finance Trades DLT Pipeline"
+      target: "finance"
+      catalog: "finance"
+      schema: "silver"
+      continuous: false
+      development: false
+      clusters:
+        - label: "default"
+          node_type_id: "Standard_DS3_v2"
+          num_workers: 2
+      libraries:
+        - notebook: "../../notebooks/silver_trades_dlt"
+        - notebook: "../../notebooks/gold_trades_dlt"
+      storage: "abfss://lake@adbsdatalake.dfs.core.windows.net/dlt_pipeline_storage"
