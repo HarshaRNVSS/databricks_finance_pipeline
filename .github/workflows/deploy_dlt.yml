@@ -13,8 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Databricks CLI
-        uses: databricks/setup-cli@v1
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
 
       - name: Deploy DLT pipeline (DEV)
         run: |
