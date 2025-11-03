@@ -17,8 +17,7 @@ jobs:
         uses: databricks/setup-cli@main
 
       - name: Deploy DLT pipeline (DEV)
-        run: |
-          databricks bundle deploy --target dev
+        run: databricks bundle deploy --target dev -p .databricks/bundles/dev
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
