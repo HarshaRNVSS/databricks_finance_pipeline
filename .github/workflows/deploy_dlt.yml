@@ -1,47 +1,41 @@
-name: Databricks Bundle Deploy (debug)
+name: Deploy Databricks Bundle
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  debug-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Checkout your repo
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Show current working directory
-        run: pwd
+      # 2️⃣ Install latest Databricks CLI
+      - name: Install Databricks CLI
+        run: pip install "databricks-cli>=0.205.0"
 
-      - name: List .databricks directory recursively (show dotfiles)
-        run: |
-          ls -la
-          echo "---- .databricks tree ----"
-          if [ -d ".databricks" ]; then
-            find .databricks -maxdepth 3 -type f -print -exec ls -la {} \;
-          else
-            echo ".databricks directory not found"
-          fi
+      # 3️⃣ Validate the bundle configuration
+      - name: Validate Databricks Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle validate --target dev
 
-      - name: Print databricks.yml (if present)
-        run: |
-          path=".databricks/bundles/dev/databricks.yml"
-          if [ -f "$path" ]; then
-            echo "Found $path"
-            sed -n '1,200p' "$path" || true
-          else
-            echo "$path not found"
-            echo "Available files in .databricks/bundles/dev:"
-            ls -la .databricks/bundles/dev || true
-            exit 1
-          fi
+      # 4️⃣ Deploy to Databricks
+      - name: Deploy Databricks Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle deploy --target dev
 
-      - name: Run databricks bundle deploy
+      # 5️⃣ (Optional) Trigger a DLT run
+      - name: Trigger DLT Pipeline Run
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          # Use explicit path to the directory that contains databricks.yml
-          databricks bundle deploy --target dev -p .databricks/bundles/dev
+          databricks bundle run --target dev --resource pipelines.silver_pipeline
