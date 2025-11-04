@@ -16,7 +16,8 @@ jobs:
 
       # 2️⃣ Install latest Databricks CLI
       - name: Install Databricks CLI
-        run: pip install "databricks-cli>=0.205.0"
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | bash
+
 
       # 3️⃣ Validate the bundle configuration
       - name: Validate Databricks Bundle
